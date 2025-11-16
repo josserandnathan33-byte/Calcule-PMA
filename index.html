@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculateur de Poids : CU et PMA (Complet)</title>
+    
+    <style>
+        /* Styles de base et typographie */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding-top: 65px; 
+            background-color: #eef2f7; 
+            color: #333; /* Bon contraste */
+            line-height: 1.6;
+        }
+        
+        /* --- MENU DE NAVIGATION --- */
+        .main-nav {
+            background-color: #1a2f4a; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            text-align: center;
+            padding: 8px 0;
+        }
+
+        #navigation-select {
+            width: 90%;
+            max-width: 450px;
+            padding: 10px 15px;
+            font-size: 1.05em;
+            color: #1a2f4a;
+            background-color: #f7f9fb; 
+            border: 2px solid #3498db; 
+            border-radius: 8px;
+            appearance: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #navigation-select:hover, #navigation-select:focus {
+            border-color: #2980b9;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+            outline: 2px solid #2980b9; /* Focus clavier essentiel */
+        }
+        
+        /* --- STYLE DU CONTENU ET DU FORMULAIRE --- */
+        section {
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 850px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            display: none; 
+        }
+
+        #accueil {
+            display: block; 
+        }
+
+        h2 {
+            color: #1a2f4a;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 12px;
+            margin-top: 0;
+            font-size: 1.8em;
+            font-weight: 600;
+        }
+
+        h3 {
+             color: #2c3e50;
+             margin-top: 25px;
+             font-size: 1.3em;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            padding: 5px;
+            border-radius: 6px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333; /* Assurer un bon contraste */
+            font-size: 0.95em;
+        }
+
+        input[type="number"], select { 
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="number"]:focus, select:focus {
+            border-color: #3498db;
+            outline: 2px solid #3498db; /* Focus clavier */
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        }
+
+
+        /* --- BOUTON DE CALCUL --- */
+        button {
+            background-color: #2ecc71; 
+            color: white;
+            padding: 14px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+        }
+
+        button:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+        
+        button:focus {
+            outline: 2px solid #1abc9c; /* Focus clavier */
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* --- CARTE DE RÉSULTAT --- */
+        .resultat {
+            margin-top: 35px;
+            padding: 20px;
+            background-color: #f0f7ff; 
+            border: 1px solid #d4e3f8;
+            border-radius: 8px;
+            font-size: 1.2em;
+            text-align: center;
+            box-shadow: inset 0 0 10px rgba(52, 152, 219, 0.1);
+        }
+
+        .resultat strong {
+            color: #e74c3c; 
+            font-size: 1.4em;
+            display: block;
+            margin-top: 10px;
+        }
+        
+        .note {
+            color: #e67e22;
+            font-style: italic;
+            background-color: #fff0e0;
+            padding: 10px;
+            border-left: 4px solid #e67e22;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+        
+        /* Styles pour la section Réglementation */
+        #reglementation ul {
+            list-style: none;
+            padding: 0;
+        }
+        #reglementation li {
+            background: #ecf0f1;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            border-left: 5px solid #34495e;
+        }
+        #reglementation li strong {
+            color: #1a2f4a;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="main-nav">
+        <select id="navigation-select" onchange="naviguerVers()">
+            <option value="#accueil">Accueil</option>
+            <option value="#calcul-cu">Calcul CU Véhicule Seul</option>
+            <option value="#calcul-pma">Calcul PMA Articulé</option>
+            <option value="#calcul-pma-train">Calcul PMA Train Routier</option>
+            <option value="#calcul-cu-ensemble">Calcul CU Ensemble</option>
+            <option value="#reglementation">Réglementation</option>
+            <option value="#credits">Crédits</option>
+        </select>
+    </nav>
+
+    <section id="accueil">
+        <h2>🚚 Bienvenue sur le Calculateur de Poids</h2>
+        <p>Cet outil vous permet de déterminer la **Charge Utile (CU)** de votre véhicule isolé et le **Poids Maximal Autorisé (PMA)** de votre ensemble articulé ou de votre train routier, conformément à la réglementation.</p>
+        <p>Utilisez le menu déroulant en haut de l'écran pour naviguer entre les différents outils de calcul.</p>
+    </section>
+
+    <section id="calcul-cu">
+        <h2>Calculer votre Charge Utile (CU) pour un véhicule seul</h2>
+        <p>Formule : **CU = PTAC (F.2) - PV (G.1)**</p>
+        
+        <div class="form-group">
+            <label for="ptac">Poids Total Autorisé en Charge (PTAC - Case F.2 en kg) :</label>
+            <input type="number" id="ptac" min="0" required placeholder="Exemple : 3500">
+        </div>
+
+        <div class="form-group">
+            <label for="pv">Poids à Vide (PV - Case G.1 en kg) :</label>
+            <input type="number" id="pv" min="0" required placeholder="Exemple : 1800">
+        </div>
+
+        <button onclick="calculerChargeUtile()">Calculer Charge Utile Maximale</button>
+
+        <div class="resultat" aria-live="polite">
+            Charge Utile Maximale : <strong id="resultatCU">0.00 kg</strong>
+        </div>
+    </section>
+
+    <section id="calcul-pma">
+        <h2>⚖️ Calcul du PMA Maximal (Ensemble Articulé)</h2>
+        <p>Ce calcul détermine la **limite légale théorique maximale** (le PMA Final) de votre ensemble articulé (Tracteur + Semi-remorque), qui est la **valeur la plus faible** parmi les trois limites légales (Réglementaire, PTRA, PTAC Semi + PV Tracteur).</p>
+        
+        <h3>Configuration de l'Ensemble</h3>
+        <div class="form-group">
+            <label for="essieux-total">Nombre total d'essieux de l'ensemble (Tracteur + Semi) :</label>
+            <select id="essieux-total" required>
+                <option value="">Sélectionner</option>
+                <option value="4">4 essieux (Ex: 2+2)</option>
+                <option value="5">5 essieux (Ex: 3+2 ou 2+3)</option>
+                <option value="6">6 essieux et plus (Ex: 3+3)</option>
+            </select>
+        </div>
+
+        <h3>Données des Certificats d'Immatriculation</h3>
+        <div class="form-group">
+            <label for="ptra-tracteur">PTRA du Tracteur (Case F.3 en kg) :</label>
+            <input type="number" id="ptra-tracteur" min="0" required placeholder="PTRA du tracteur seul">
+        </div>
+
+        <div class="form-group">
+            <label for="ptac-semi">PTAC de la Semi-Remorque (Case F.2 en kg) :</label>
+            <input type="number" id="ptac-semi" min="0" required placeholder="PTAC de la semi">
+        </div>
+
+        <div class="form-group">
+            <label for="pv-tracteur">PV du Tracteur (Case G.1 en kg) :</label>
+            <input type="number" id="pv-tracteur" min="0" required placeholder="Poids à vide du tracteur">
+        </div>
+
+        <button onclick="calculerPMAFinal()">Calculer le PMA Maximal</button>
+
+        <div class="resultat" aria-live="polite">
+            Poids Maximum Autorisé (PMA) Final : <strong id="resultatPMA-legal">0.00 kg</strong>
+        </div>
+    </section>
+
+    <section id="calcul-pma-train">
+        <h2>🚚 Calcul du PMA Maximal (Train Routier)</h2>
+        <p>Ce calcul détermine la **limite légale théorique maximale** (le PMA Final) de l'ensemble Camion (Porteur) + Remorque. Le PMA Final est la **valeur la plus faible** des trois contraintes : Réglementaire, PTRA du Porteur, ou Somme des PTAC.</p>
+        
+        <h3>Configuration de l'Ensemble</h3>
+        <div class="form-group">
+            <label for="essieux-train">Nombre total d'essieux du Train Routier (Porteur + Remorque) :</label>
+            <select id="essieux-train" required>
+                <option value="">Sélectionner</option>
+                <option value="4">4 essieux</option>
+                <option value="5">5 essieux</option>
+                <option value="6">6 essieux et plus</option>
+            </select>
+        </div>
+
+        <h3>Données des Certificats d'Immatriculation</h3>
+        <div class="form-group">
+            <label for="ptra-porteur">PTRA du Porteur (Camion - Case F.3 en kg) :</label>
+            <input type="number" id="ptra-porteur" min="0" required placeholder="PTRA du porteur seul">
+        </div>
+
+        <div class="form-group">
+            <label for="ptac-porteur">PTAC du Porteur (Camion - Case F.2 en kg) :</label>
+            <input type="number" id="ptac-porteur" min="0" required placeholder="PTAC du porteur">
+        </div>
+
+        <div class="form-group">
+            <label for="ptac-remorque">PTAC de la Remorque (Case F.2 en kg) :</label>
+            <input type="number" id="ptac-remorque" min="0" required placeholder="PTAC de la remorque">
+        </div>
+
+        <button onclick="calculerPMATrain()">Calculer le PMA Maximal du Train</button>
+
+        <div class="resultat" aria-live="polite">
+            Poids Maximum Autorisé (PMA) Final du Train : <strong id="resultatPMATrain-legal">0.00 kg</strong>
+        </div>
+    </section>
+    
+    <section id="calcul-cu-ensemble">
+        <h2>📦 Calcul de la Charge Utile (CU) de l'Ensemble</h2>
+        <p>Formule : **CU Ensemble = PMA Final - PV Total de l'Ensemble**</p>
+        
+        <h3>Données nécessaires</h3>
+        <p class="note">Utilisez le PMA Final obtenu dans la section PMA appropriée.</p>
+
+        <div class="form-group">
+            <label for="pma-final-calcul">PMA Final (Valeur déterminée en kg) :</label>
+            <input type="number" id="pma-final-calcul" min="0" required placeholder="Entrez le PMA Final">
+        </div>
+
+        <div class="form-group">
+            <label for="pv-tracteur-cu">PV Tracteur/Porteur (Case G.1 en kg) :</label>
+            <input type="number" id="pv-tracteur-cu" min="0" required placeholder="Poids à vide du moteur">
+        </div>
+
+        <div class="form-group">
+            <label for="pv-semi">PV Total des Éléments Tractés (Semi(s) ou Remorque(s) - Case G.1 en kg) :</label>
+            <input type="number" id="pv-semi" min="0" required placeholder="Somme des PV de(s) la semi(s) ou remorque(s)">
+        </div>
+
+        <button onclick="calculerCUEnsemble()">Calculer Charge Utile Ensemble</button>
+
+        <div class="resultat" aria-live="polite">
+            Charge Utile (Marchandise) Maximale : <strong id="resultatCUEnsemble">0.00 kg</strong>
+        </div>
+    </section>
+
+    <section id="reglementation">
+        <h2>Réglementation PTAC et PMA (Poids Maximaux Légaux)</h2>
+        <p>Voici un rappel des limites réglementaires en France pour les véhicules de marchandises (à titre indicatif) :</p>
+        
+        <h3>PMA Réglementaire (Ensembles)</h3>
+        <ul>
+            <li>**4 essieux :** 38 tonnes (38 000 kg)</li>
+            <li>**5 essieux :** 40 tonnes (40 000 kg)</li>
+            <li>**6 essieux et plus :** 44 tonnes (44 000 kg)</li>
+        </ul>
+
+        <h3>PTAC (Véhicule isolé)</h3>
+        <ul>
+            <li>**2 essieux :** 19 tonnes (max)</li>
+            <li>**3 essieux :** 26 tonnes (max)</li>
+        </ul>
+    </section>
+
+    <section id="credits">
+        <h2>✨ Crédits et Mentions Légales</h2>
+        <p>Ce site web a été conçu dans la cadre de notre BAC Pro en tant que projet. Les informations réglementaires sont données à titre indicatif.</p>
+        <p><strong>Avertissement :</strong> Les valeurs officielles du PTAC, PV et PTRA se trouvent sur les documents du véhicule. Le dépassement de ces limites est passible de sanctions.</p>
+        <ul>
+            <li>**Conception :** Josserand Nathan, Marmet Charly, Grobon Mathéo</li>
+            <li>**Sources de données réglementaires :** Code de la Route (Articles R312-2 à R312-7)</li>
+        </ul>
+    </section>
+
+
+    <script>
+        // Fonction pour gérer la navigation via le menu déroulant et l'affichage des sections
+        function naviguerVers() {
+            const selectElement = document.getElementById('navigation-select');
+            const targetId = selectElement.value; 
+
+            // 1. Masquer toutes les sections
+            document.querySelectorAll('section').forEach(section => {
+                section.style.display = 'none';
+            });
+
+            // 2. Afficher la section cible
+            if (targetId) {
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.style.display = 'block';
+                    
+                    // Remonter en haut de la page après le changement de section
+                    window.scrollTo({ top: 0, behavior: 'smooth' }); 
+                }
+            }
+        }
+
+        // Fonction pour calculer la CU d'un véhicule seul
+        function calculerChargeUtile() {
+            const ptac = parseFloat(document.getElementById('ptac').value);
+            const pv = parseFloat(document.getElementById('pv').value);
+            const resultatElement = document.getElementById('resultatCU');
+
+            if (isNaN(ptac) || isNaN(pv) || ptac < 0 || pv < 0) {
+                resultatElement.innerHTML = "Veuillez entrer des valeurs numériques positives valides. <strong>0.00 kg</strong>";
+                return;
+            }
+
+            const chargeUtile = ptac - pv;
+
+            if (chargeUtile >= 0) {
+                resultatElement.innerHTML = chargeUtile.toFixed(2).toLocaleString('fr-FR') + " kg";
+            } else {
+                resultatElement.innerHTML = "Erreur: Le PTAC est inférieur au PV. Vérifiez vos données. <strong>0.00 kg</strong>";
+            }
+        }
+        
+        // Fonction pour calculer le PMA final (Articulé)
+        function calculerPMAFinal() {
+            const nbEssieux = document.getElementById('essieux-total').value;
+            const ptraTracteur = parseFloat(document.getElementById('ptra-tracteur').value);
+            const ptacSemi = parseFloat(document.getElementById('ptac-semi').value);
+            const pvTracteur = parseFloat(document.getElementById('pv-tracteur').value);
+            
+            const resultatLegal = document.getElementById('resultatPMA-legal');
+
+            if (isNaN(ptraTracteur) || isNaN(ptacSemi) || isNaN(pvTracteur) || nbEssieux === "") {
+                resultatLegal.innerHTML = "Veuillez remplir tous les champs. <strong>0.00 kg</strong>";
+                return;
+            }
+
+            // Limite Réglementaire (par essieux)
+            let pmaReglementaire;
+            if (nbEssieux === "4") {
+                pmaReglementaire = 38000; 
+            } else if (nbEssieux === "5") {
+                pmaReglementaire = 40000; 
+            } else if (nbEssieux === "6") {
+                pmaReglementaire = 44000; 
+            } else {
+                pmaReglementaire = 999999; 
+            }
+
+            // Limite PTRA du Tracteur (F.3)
+            const limitePtra = ptraTracteur;
+
+            // Limite PTAC Semi + PV Tracteur
+            const limitePtacPv = ptacSemi + pvTracteur;
+
+            // Détermination du PMA Final (le MINIMUM des trois)
+            const pmaFinal = Math.min(pmaReglementaire, limitePtra, limitePtacPv);
+            
+            resultatLegal.innerHTML = pmaFinal.toLocaleString('fr-FR') + " kg";
+        }
+
+        // Fonction pour calculer le PMA final d'un Train Routier
+        function calculerPMATrain() {
+            const nbEssieuxTrain = document.getElementById('essieux-train').value;
+            const ptraPorteur = parseFloat(document.getElementById('ptra-porteur').value);
+            const ptacPorteur = parseFloat(document.getElementById('ptac-porteur').value);
+            const ptacRemorque = parseFloat(document.getElementById('ptac-remorque').value);
+            
+            const resultatLegal = document.getElementById('resultatPMATrain-legal');
+
+            if (isNaN(ptraPorteur) || isNaN(ptacPorteur) || isNaN(ptacRemorque) || nbEssieuxTrain === "") {
+                resultatLegal.innerHTML = "Veuillez remplir tous les champs. <strong>0.00 kg</strong>";
+                return;
+            }
+
+            // Limite Réglementaire Train Routier (en kg)
+            let pmaReglementaireTrain;
+            if (nbEssieuxTrain === "4") {
+                pmaReglementaireTrain = 38000; 
+            } else if (nbEssieuxTrain === "5") {
+                pmaReglementaireTrain = 40000; 
+            } else if (nbEssieuxTrain === "6") {
+                pmaReglementaireTrain = 44000; 
+            } else {
+                pmaReglementaireTrain = 999999; 
+            }
+
+            // Limite PTRA du Porteur (F.3)
+            const limitePtra = ptraPorteur;
+
+            // Limite Somme des PTAC (Porteur + Remorque)
+            const limiteSommePtac = ptacPorteur + ptacRemorque;
+
+            // Détermination du PMA Final (le MINIMUM des trois)
+            const pmaFinalTrain = Math.min(pmaReglementaireTrain, limitePtra, limiteSommePtac);
+            
+            resultatLegal.innerHTML = pmaFinalTrain.toLocaleString('fr-FR') + " kg";
+        }
+        
+        // Fonction pour calculer la CU de l'ensemble
+        function calculerCUEnsemble() {
+            const pmaFinal = parseFloat(document.getElementById('pma-final-calcul').value);
+            const pvTracteurCU = parseFloat(document.getElementById('pv-tracteur-cu').value);
+            const pvSemi = parseFloat(document.getElementById('pv-semi').value);
+            const resultatCUEnsemble = document.getElementById('resultatCUEnsemble');
+
+            if (isNaN(pmaFinal) || isNaN(pvTracteurCU) || isNaN(pvSemi) || pmaFinal < 0 || pvTracteurCU < 0 || pvSemi < 0) {
+                resultatCUEnsemble.innerHTML = "Veuillez entrer des valeurs numériques positives valides. <strong>0.00 kg</strong>";
+                return;
+            }
+
+            const pvTotalEnsemble = pvTracteurCU + pvSemi;
+            const cuEnsemble = pmaFinal - pvTotalEnsemble;
+
+            if (cuEnsemble >= 0) {
+                resultatCUEnsemble.innerHTML = cuEnsemble.toFixed(2).toLocaleString('fr-FR') + " kg";
+            } else {
+                resultatCUEnsemble.innerHTML = "Erreur: Le poids à vide total est supérieur au PMA Final. Vérifiez vos données. <strong>0.00 kg</strong>";
+            }
+        }
+    </script>
+
+</body>
+</html>
+
