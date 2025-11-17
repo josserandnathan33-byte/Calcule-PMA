@@ -11,9 +11,26 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding-top: 65px; 
-            background-color: #eef2f7; 
-            color: #333; /* Bon contraste */
+            /* Rendre le fond du body transparent par défaut */
+            background-color: transparent; 
+            color: #333; 
             line-height: 1.6;
+            position: relative; 
+            z-index: 0;
+        }
+
+        /* NOUVEAU : Image de fond floutée pour tout le corps de la page */
+        body::before {
+            content: "";
+            position: fixed; /* Reste fixe en scrollant */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('logistique.jpg') no-repeat center center fixed; /* Utilise fixed pour le scroll */
+            background-size: cover;
+            filter: blur(4px); /* Intensité du flou */
+            z-index: -10; /* Placé très loin derrière pour ne rien masquer */
         }
         
         /* --- MENU DE NAVIGATION --- */
@@ -46,7 +63,7 @@
         #navigation-select:hover, #navigation-select:focus {
             border-color: #2980b9;
             box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
-            outline: 2px solid #2980b9; /* Focus clavier essentiel */
+            outline: 2px solid #2980b9; 
         }
         
         /* --- STYLE DU CONTENU ET DU FORMULAIRE --- */
@@ -54,53 +71,36 @@
             padding: 30px;
             margin: 20px auto;
             max-width: 850px;
-            background-color: white;
+            /* Fond blanc semi-transparent pour la lisibilité sur l'image de fond */
+            background-color: rgba(255, 255, 255, 0.9); 
             border-radius: 12px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
             display: none; 
-            position: relative; /* Nécessaire pour positionner l'overlay */
-            overflow: hidden; /* Important pour le flou des bords */
+            position: relative; 
         }
 
+        /* RETOUR À LA NORMALE POUR LE TEXTE (couleur noire par défaut) */
         #accueil {
             display: block; 
-            color: white; /* Texte en blanc pour contraster avec le fond sombre */
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.7); /* Ombre pour meilleure lisibilité */
-            background-color: transparent; /* Pas de fond blanc pour la section d'accueil */
-            box-shadow: none; /* Pas d'ombre non plus */
-            min-height: 300px; /* Pour que l'image de fond soit bien visible */
-            display: flex; /* Pour centrer le contenu verticalement */
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            color: #333; /* Texte normal sur l'accueil */
+            text-shadow: none; 
+            background-color: rgba(255, 255, 255, 0.9); /* Fond blanc pour la boîte d'accueil */
             text-align: center;
+            padding: 30px;
         }
 
-        /* Image de fond avec flou pour la section d'accueil */
+        /* Retire l'image de fond de l'accueil, elle est maintenant sur le body */
         #accueil::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('logistique.jpg') no-repeat center center / cover;
-            filter: blur(4px); /* Intensité du flou */
-            z-index: -1; /* Placer derrière le contenu */
-            transform: scale(1.05); /* Empêche les bords flous */
-            border-radius: 12px; /* Pour que le flou ne déborde pas */
+            content: none; 
         }
 
         h2 {
-            color: white; /* Titre en blanc pour l'accueil */
+            color: #1a2f4a;
             border-bottom: 3px solid #3498db;
             padding-bottom: 12px;
             margin-top: 0;
             font-size: 1.8em;
             font-weight: 600;
-        }
-        #accueil h2 { /* Spécifique pour l'accueil */
-            margin-bottom: 20px;
         }
 
         h3 {
@@ -119,7 +119,7 @@
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
-            color: #333; /* Assurer un bon contraste */
+            color: #333; 
             font-size: 0.95em;
         }
 
@@ -135,10 +135,9 @@
         
         input[type="number"]:focus, select:focus {
             border-color: #3498db;
-            outline: 2px solid #3498db; /* Focus clavier */
+            outline: 2px solid #3498db; 
             box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
         }
-
 
         /* --- BOUTON DE CALCUL --- */
         button {
@@ -160,7 +159,7 @@
         }
         
         button:focus {
-            outline: 2px solid #1abc9c; /* Focus clavier */
+            outline: 2px solid #1abc9c; 
         }
 
         button:active {
