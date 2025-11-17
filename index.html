@@ -361,7 +361,7 @@
     
     <section id="calcul-ml">
         <h2>📏 Calcul du Métrage Linéaire (ML)</h2>
-        <p>Ce calcul utilise la convention logistique standard selon laquelle une palette représente une fraction du métrage linéaire (ML) total du camion.</p>
+        <p>Ce calcul utilise la convention logistique standard pour déterminer le ML occupé par vos palettes selon leur type et le sens de chargement.</p>
         
         <div class="form-group">
             <label for="type-palette">Type de Palette :</label>
@@ -370,14 +370,20 @@
                 <option value="europe">Palette Europe (80 x 120 cm)</option>
                 <option value="standard">Palette Standard / ISO (100 x 120 cm)</option>
             </select>
-            <p class="note">Pour une semi-remorque standard (2,40m large) : <br>
-            - **Europe (80cm) :** 3 palettes tiennent en largeur, soit **0,40 ML** par palette. <br>
-            - **Standard (100cm) :** 2 palettes tiennent en largeur, soit **0,60 ML** par palette.</p>
+        </div>
+
+        <div class="form-group">
+            <label for="sens-chargement">Sens de chargement (côté dans la longueur du camion) :</label>
+            <select id="sens-chargement" required>
+                <option value="">Sélectionner</option>
+                <option value="long">Côté long (1,20 m) dans la longueur du camion (ML = 0,4 ou 0,6 par palette)</option>
+                <option value="court">Côté court (80 ou 100 cm) dans la longueur du camion (ML = 0,8 ou 1,0 par palette)</option>
+            </select>
         </div>
 
         <div class="form-group">
             <label for="nb-palettes">Nombre **total** de Palettes à Calculer :</label>
-            <input type="number" id="nb-palettes" min="0" required placeholder="Exemple : 33 pour des palettes Europe">
+            <input type="number" id="nb-palettes" min="0" required placeholder="Exemple : 33 pour l'option Long (Europe)">
         </div>
         
         <button onclick="calculerMetrageLineaire()">Calculer le Métrage Linéaire</button>
@@ -557,54 +563,71 @@
             }
         }
         
-        // FONCTION CORRIGÉE : CALCUL DU MÉTRAGE LINÉAIRE
+        // FONCTION MISE À JOUR : CALCUL DU MÉTRAGE LINÉAIRE
         function calculerMetrageLineaire() {
             const typePalette = document.getElementById('type-palette').value;
+            const sensChargement = document.getElementById('sens-chargement').value;
             const nbPalettes = parseInt(document.getElementById('nb-palettes').value);
             const resultatElement = document.getElementById('resultatML');
             const noteElement = document.getElementById('noteML');
 
-            noteElement.innerHTML = ""; // Réinitialiser la note
+            noteElement.innerHTML = ""; 
 
-            if (typePalette === "" || isNaN(nbPalettes) || nbPalettes < 0) {
-                resultatElement.innerHTML = "Veuillez sélectionner le type de palette et entrer un nombre valide. <strong>0.00 m</strong>";
+            if (typePalette === "" || sensChargement === "" || isNaN(nbPalettes) || nbPalettes < 0) {
+                resultatElement.innerHTML = "Veuillez remplir tous les champs. <strong>0.00 m</strong>";
                 return;
             }
 
-            let mlParPalette; // Multiplicateur de Métrage Linéaire par palette
-            let capaciteMax; // Capacité maximale standard d'une semi
+            let mlParPalette; 
+            let capaciteMax; 
+            let explication;
 
-            if (typePalette === 'europe') {
-                // Palette Europe (80x120). 3 palettes tiennent en largeur (2.40m) et consomment 1.20 ML.
-                // Donc 1 palette = 1.20 ML / 3 = 0.40 ML
-                mlParPalette = 0.40;
-                capaciteMax = 33; // Capacité standard d'une semi
-            } else if (typePalette === 'standard') {
-                // Palette Standard (100x120). 2 palettes tiennent en largeur (2.00m) et consomment 1.20 ML.
-                // Donc 1 palette = 1.20 ML / 2 = 0.60 ML
-                mlParPalette = 0.60;
-                capaciteMax = 27; // Capacité standard d'une semi
+            if (sensChargement === 'long') {
+                // CÔTÉ LONG (1.20m) dans la longueur du camion (Chargement optimal en largeur)
+                if (typePalette === 'europe') {
+                    // 3 palettes de 80cm de large dans le sens 1.20m de long
+                    mlParPalette = 0.40; // 1.20 / 3
+                    capaciteMax = 33;
+                    explication = "3 palettes tiennent en largeur. Chaque palette compte pour **0,40 ML**.";
+                } else if (typePalette === 'standard') {
+                    // 2 palettes de 100cm de large dans le sens 1.20m de long
+                    mlParPalette = 0.60; // 1.20 / 2
+                    capaciteMax = 27;
+                    explication = "2 palettes tiennent en largeur. Chaque palette compte pour **0,60 ML**.";
+                }
+            } else if (sensChargement === 'court') {
+                // CÔTÉ COURT (80cm ou 100cm) dans la longueur du camion
+                if (typePalette === 'europe') {
+                    // 2 palettes de 1.20m de large dans le sens 0.80m de long
+                    mlParPalette = 0.80; // La longueur occupée est 80cm (0.80m)
+                    capaciteMax = 17; // 13.6 / 0.8
+                    explication = "La longueur occupée est 0,80 m. 2 palettes tiennent en largeur (1,20m). Chaque palette compte pour **0,80 ML**.";
+                } else if (typePalette === 'standard') {
+                    // 2 palettes de 1.20m de large dans le sens 1.00m de long, mais la largeur totale de la palette (1.20m) est chargée à l'intérieur.
+                    // C'est un chargement moins fréquent où la palette est tournée.
+                    mlParPalette = 1.00; // La longueur occupée est 100cm (1.00m)
+                    capaciteMax = 13; // 13.6 / 1
+                    explication = "La longueur occupée est 1,00 m. 1 seule palette de 1,20m tiendrait en largeur. Chaque palette compte pour **1,00 ML**.";
+                }
             } else {
-                resultatElement.innerHTML = "Type de palette non reconnu. <strong>0.00 m</strong>";
+                resultatElement.innerHTML = "Type de palette ou sens de chargement non reconnu. <strong>0.00 m</strong>";
                 return;
             }
 
             // Calcul : Nombre de palettes * ML par palette
             const metrageLinéaire = nbPalettes * mlParPalette;
             
-            // Afficher des notes informatives pour l'utilisateur
-            noteElement.innerHTML = 
-                `Configuration utilisée : Chaque palette compte pour <strong>${mlParPalette.toFixed(2)} ML</strong>.`;
-                
-            // Vérification de la capacité standard du camion
-            if (metrageLinéaire > 13.6) {
-                // 13.6m est la longueur standard d'une semi-remorque
-                noteElement.innerHTML += `<br> **Alerte :** Le Métrage Linéaire calculé (${metrageLinéaire.toFixed(2)} m) est supérieur à la longueur standard d'une semi-remorque (13,60 m).`;
-            } else if (nbPalettes > capaciteMax) {
-                noteElement.innerHTML += `<br> **Alerte :** Le nombre de palettes (${nbPalettes}) est supérieur à la capacité maximale ${capaciteMax} d'une semi standard selon la disposition sélectionnée.`;
-            }
-
+            // Affichage des résultats
             resultatElement.innerHTML = metrageLinéaire.toFixed(2).toLocaleString('fr-FR') + " m";
+            
+            noteElement.innerHTML = `**Détails du Calcul :** ${explication}`;
+                
+            // Vérification de la capacité standard du camion (13,60m)
+            if (metrageLinéaire > 13.6) {
+                noteElement.innerHTML += `<br> **Alerte :** Le Métrage Linéaire calculé (${metrageLinéaire.toFixed(2)} m) est supérieur à la longueur standard d'une semi-remorque (13,60 m).`;
+            } else if (nbPalettes > capaciteMax && metrageLinéaire <= 13.6) {
+                noteElement.innerHTML += `<br> **Information :** Le nombre de palettes (${nbPalettes}) est supérieur à la capacité maximale théorique (${capaciteMax} palettes) d'une semi standard de 13,60 m. Vérifiez le type de remorque utilisé.`;
+            }
         }
     </script>
 
