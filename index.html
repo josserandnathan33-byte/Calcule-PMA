@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta name="google-site-verification" content="i0Zg9FVl4sAzF6dF-FH27marwxDyE0Yq7AV2gPp6Y6g" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calcule de PMA/CU (Complet)</title>
+    <title>Calculateur de Poids : CU et PMA (Complet)</title>
     
     <style>
         /* Styles de base et typographie */
@@ -63,6 +62,17 @@
 
         #accueil {
             display: block; 
+        }
+
+        /* Style pour l'image d'accueil */
+        .image-accueil {
+            width: 100%; 
+            max-width: 400px; /* Taille maximale pour ne pas déborder */
+            height: auto;
+            display: block;
+            margin: 20px auto 30px auto; /* Centrer l'image */
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
         }
 
         h2 {
@@ -200,6 +210,9 @@
 
     <section id="accueil">
         <h2>🚚 Bienvenue sur le Calculateur de Poids</h2>
+        
+        <img src="logistique.jpg" alt="Illustration de déchargement de marchandises avec un chariot élévateur et un camion de livraison, symbolisant la logistique." class="image-accueil">
+        
         <p>Cet outil vous permet de déterminer la **Charge Utile (CU)** de votre véhicule isolé et le **Poids Maximal Autorisé (PMA)** de votre ensemble articulé ou de votre train routier, conformément à la réglementation.</p>
         <p>Utilisez le menu déroulant en haut de l'écran pour naviguer entre les différents outils de calcul.</p>
     </section>
@@ -350,7 +363,7 @@
 
     <section id="credits">
         <h2>✨ Crédits et Mentions Légales</h2>
-        <p>Ce site web a été conçu dans la cadre de notre BAC Pro en tant que projet. Les informations réglementaires sont données à titre indicatif.</p>
+        <p>Ce site web a été conçu comme un outil d'assistance au calcul. Les informations réglementaires sont données à titre indicatif.</p>
         <p><strong>Avertissement :</strong> Les valeurs officielles du PTAC, PV et PTRA se trouvent sur les documents du véhicule. Le dépassement de ces limites est passible de sanctions.</p>
         <ul>
             <li>**Conception :** Josserand Nathan, Marmet Charly, Grobon Mathéo</li>
@@ -503,6 +516,3 @@
 
 </body>
 </html>
-
-
-
