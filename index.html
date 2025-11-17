@@ -58,30 +58,49 @@
             border-radius: 12px;
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
             display: none; 
+            position: relative; /* Nécessaire pour positionner l'overlay */
+            overflow: hidden; /* Important pour le flou des bords */
         }
 
         #accueil {
             display: block; 
+            color: white; /* Texte en blanc pour contraster avec le fond sombre */
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.7); /* Ombre pour meilleure lisibilité */
+            background-color: transparent; /* Pas de fond blanc pour la section d'accueil */
+            box-shadow: none; /* Pas d'ombre non plus */
+            min-height: 300px; /* Pour que l'image de fond soit bien visible */
+            display: flex; /* Pour centrer le contenu verticalement */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
         }
 
-        /* Style pour l'image d'accueil */
-        .image-accueil {
-            width: 100%; 
-            max-width: 400px; /* Taille maximale pour ne pas déborder */
-            height: auto;
-            display: block;
-            margin: 20px auto 30px auto; /* Centrer l'image */
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        /* Image de fond avec flou pour la section d'accueil */
+        #accueil::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('logistique.jpg') no-repeat center center / cover;
+            filter: blur(4px); /* Intensité du flou */
+            z-index: -1; /* Placer derrière le contenu */
+            transform: scale(1.05); /* Empêche les bords flous */
+            border-radius: 12px; /* Pour que le flou ne déborde pas */
         }
 
         h2 {
-            color: #1a2f4a;
+            color: white; /* Titre en blanc pour l'accueil */
             border-bottom: 3px solid #3498db;
             padding-bottom: 12px;
             margin-top: 0;
             font-size: 1.8em;
             font-weight: 600;
+        }
+        #accueil h2 { /* Spécifique pour l'accueil */
+            margin-bottom: 20px;
         }
 
         h3 {
@@ -210,8 +229,6 @@
 
     <section id="accueil">
         <h2>🚚 Bienvenue sur le Calculateur de Poids</h2>
-        
-        <img src="logistique.jpg" alt="Illustration de déchargement de marchandises avec un chariot élévateur et un camion de livraison, symbolisant la logistique." class="image-accueil">
         
         <p>Cet outil vous permet de déterminer la **Charge Utile (CU)** de votre véhicule isolé et le **Poids Maximal Autorisé (PMA)** de votre ensemble articulé ou de votre train routier, conformément à la réglementation.</p>
         <p>Utilisez le menu déroulant en haut de l'écran pour naviguer entre les différents outils de calcul.</p>
