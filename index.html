@@ -19,7 +19,7 @@
             z-index: 0;
         }
 
-        /* NOUVEAU : Image de fond floutée pour tout le corps de la page */
+        /* Image de fond floutée pour tout le corps de la page */
         body::before {
             content: "";
             position: fixed; /* Reste fixe en scrollant */
@@ -221,6 +221,7 @@
             <option value="#calcul-pma">Calcul PMA Articulé</option>
             <option value="#calcul-pma-train">Calcul PMA Train Routier</option>
             <option value="#calcul-cu-ensemble">Calcul CU Ensemble</option>
+            <option value="#calcul-ml">Calcul Métrage Linéaire (ML)</option>
             <option value="#reglementation">Réglementation</option>
             <option value="#credits">Crédits</option>
         </select>
@@ -358,7 +359,32 @@
             Charge Utile (Marchandise) Maximale : <strong id="resultatCUEnsemble">0.00 kg</strong>
         </div>
     </section>
+    
+    <section id="calcul-ml">
+        <h2>📏 Calcul du Métrage Linéaire (ML)</h2>
+        <p>Le métrage linéaire est calculé en fonction du nombre de palettes au sol (positionnées dans le sens de la longueur du camion) et de leur type (Europe ou standard).</p>
+        
+        <div class="form-group">
+            <label for="type-palette">Type de Palette :</label>
+            <select id="type-palette" required>
+                <option value="">Sélectionner</option>
+                <option value="europe">Palette Europe (80 x 120 cm)</option>
+                <option value="standard">Palette Standard / ISO (100 x 120 cm)</option>
+            </select>
+            <p class="note">Note : Le ML est basé sur la longueur de 1,20 m par palette posée dans le sens de la longueur du camion.</p>
+        </div>
 
+        <div class="form-group">
+            <label for="nb-palettes">Nombre de Palettes à Calculer :</label>
+            <input type="number" id="nb-palettes" min="0" required placeholder="Exemple : 15">
+        </div>
+        
+        <button onclick="calculerMetrageLineaire()">Calculer le Métrage Linéaire</button>
+
+        <div class="resultat" aria-live="polite">
+            Métrage Linéaire (ML) Total : <strong id="resultatML">0.00 m</strong>
+        </div>
+    </section>
     <section id="reglementation">
         <h2>Réglementation PTAC et PMA (Poids Maximaux Légaux)</h2>
         <p>Voici un rappel des limites réglementaires en France pour les véhicules de marchandises (à titre indicatif) :</p>
@@ -528,6 +554,50 @@
                 resultatCUEnsemble.innerHTML = "Erreur: Le poids à vide total est supérieur au PMA Final. Vérifiez vos données. <strong>0.00 kg</strong>";
             }
         }
+        
+        // NOUVELLE FONCTION : CALCUL DU MÉTRAGE LINÉAIRE
+        function calculerMetrageLineaire() {
+            const typePalette = document.getElementById('type-palette').value;
+            const nbPalettes = parseInt(document.getElementById('nb-palettes').value);
+            const resultatElement = document.getElementById('resultatML');
+
+            if (typePalette === "" || isNaN(nbPalettes) || nbPalettes < 0) {
+                resultatElement.innerHTML = "Veuillez sélectionner le type de palette et entrer un nombre valide. <strong>0.00 m</strong>";
+                return;
+            }
+
+            let mlParPalette;
+
+            // Une palette Europe ou Standard positionnée dans le sens de la longueur du camion
+            // occupe 1,20 m de long.
+            mlParPalette = 1.2; 
+            
+            let metrageLinéaire;
+            
+            if (typePalette === 'europe') {
+                // Pour les palettes Europe (80x120), on considère généralement qu'elles sont chargées dans le sens 80cm pour optimiser la largeur du camion.
+                // 2 palettes Europe (1.2m x 0.8m) côte à côte font 1.6m de large.
+                // Or, la plupart des semi-remorques ont une largeur utile de 2,40m à 2,45m.
+                // On peut donc mettre 3 palettes côte à côte (3 x 0.8m = 2.4m) en chargement transversal.
+                // Cependant, dans l'usage le plus simple, on compte le ML basé sur la longueur (1.2m) par palette en ligne.
+                // Pour simplifier et répondre à la demande : on utilise 1.2m par palette.
+                metrageLinéaire = nbPalettes * mlParPalette; 
+            } else if (typePalette === 'standard') {
+                // Palettes Standard (100x120), elles occupent 1.2m de longueur du camion.
+                // On ne peut en mettre que 2 côte à côte (2x1.0m = 2.0m de large).
+                // Elles sont plus efficaces en terme de surface mais le ML reste 1.2m.
+                metrageLinéaire = nbPalettes * mlParPalette;
+            } else {
+                // Fallback de sécurité
+                 metrageLinéaire = nbPalettes * mlParPalette;
+            }
+
+            // Calcul simplifié : Le métrage linéaire occupé est la somme des longueurs occupées par chaque palette.
+            // On considère ici que toutes les palettes sont posées en ligne (1,20 m de long).
+            
+            resultatElement.innerHTML = metrageLinéaire.toFixed(2).toLocaleString('fr-FR') + " m";
+        }
+
     </script>
 
 </body>
