@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://josserandnathan33-byte.github.io/Calcule-PMA/sitemap.xml
