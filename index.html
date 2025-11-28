@@ -5,7 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculateur Logistique : Poids et Métrage Linéaire</title>
     
+    </urlset>
+
+    -->
+    
     <style>
+        /* --- STYLES CSS INTÉGRÉS --- */
+
         /* Styles de base et typographie */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -26,13 +32,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            /* ASSUREZ-VOUS QUE LE NOM DU FICHIER EST CORRECT : logistique.jpg */
-            background: url('logistique.jpg') no-repeat center center fixed; 
+            /* ASSUREZ-VOUS QUE CE FICHIER IMAGE EST PRÉSENT DANS LE MÊME DOSSIER ! */
+            background: url('image_6305ed.jpg') no-repeat center center fixed; 
             background-size: cover;
             filter: blur(4px); 
             z-index: -10; 
         }
-        
+
         /* --- MENU DE NAVIGATION --- */
         .main-nav {
             background-color: #1a2f4a; 
@@ -65,7 +71,7 @@
             box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
             outline: 2px solid #2980b9; 
         }
-        
+
         /* --- STYLE DU CONTENU ET DU FORMULAIRE --- */
         section {
             padding: 30px;
@@ -129,7 +135,7 @@
             font-size: 1em;
             transition: border-color 0.3s;
         }
-        
+
         input[type="number"]:focus, select:focus {
             border-color: #3498db;
             outline: 2px solid #3498db; 
@@ -154,7 +160,7 @@
             background-color: #27ae60;
             transform: translateY(-2px);
         }
-        
+
         button:focus {
             outline: 2px solid #1abc9c; 
         }
@@ -181,7 +187,7 @@
             display: block;
             margin-top: 10px;
         }
-        
+
         .note {
             color: #e67e22;
             font-style: italic;
@@ -191,7 +197,7 @@
             border-radius: 4px;
             margin-top: 15px;
         }
-        
+
         /* Styles pour la section Réglementation */
         #reglementation ul {
             list-style: none;
@@ -254,7 +260,7 @@
 
     <section id="calcul-pma">
         <h2>⚖️ Calcul du PMA Maximal (Ensemble Articulé)</h2>
-        <p>Ce calcul détermine la **limite légale théorique maximale** (le PMA Final) de votre ensemble articulé (Tracteur + Semi-remorque), qui est la **valeur la plus faible** parmi les trois limites légales (Réglementaire, PTRA, PTAC Semi + PV Tracteur).</p>
+        <p>Ce calcul détermine la **limite légale théorique maximale** (le PMA Final) de votre ensemble articulé (Tracteur + Semi-remorque).</p>
         
         <h3>Configuration de l'Ensemble</h3>
         <div class="form-group">
@@ -262,7 +268,8 @@
             <select id="essieux-total" required>
                 <option value="">Sélectionner</option>
                 <option value="4">4 essieux (Ex: 2+2)</option>
-                <option value="5">5 essieux et plus (Ex: 3+2 ou 2+3)</option>
+                <option value="5">5 essieux (Ex: 3+2 ou 2+3)</option>
+                <option value="6">6 essieux et plus (Ex: 3+3)</option>
             </select>
         </div>
 
@@ -291,7 +298,7 @@
 
     <section id="calcul-pma-train">
         <h2>🚚 Calcul du PMA Maximal (Train Routier)</h2>
-        <p>Ce calcul détermine la **limite légale théorique maximale** (le PMA Final) de l'ensemble Camion (Porteur) + Remorque. Le PMA Final est la **valeur la plus faible** des trois contraintes : Réglementaire, PTRA du Porteur, ou Somme des PTAC.</p>
+        <p>Ce calcul détermine la **limite légale théorique maximale** (le PMA Final) de l'ensemble Camion (Porteur) + Remorque.</p>
         
         <h3>Configuration de l'Ensemble</h3>
         <div class="form-group">
@@ -390,6 +397,7 @@
             <p class="note" id="noteML"></p>
         </div>
     </section>
+
     <section id="reglementation">
         <h2>Réglementation PTAC et PMA (Poids Maximaux Légaux)</h2>
         <p>Voici un rappel des limites réglementaires en France pour les véhicules de marchandises (à titre indicatif) :</p>
@@ -397,7 +405,8 @@
         <h3>PMA Réglementaire (Ensembles)</h3>
         <ul>
             <li>**4 essieux :** 38 tonnes (38 000 kg)</li>
-            <li>**5 essieux et plus :** 44 tonnes (44 000 kg)</li>
+            <li>**5 essieux :** 40 tonnes (40 000 kg)</li>
+            <li>**6 essieux et plus :** 44 tonnes (44 000 kg)</li>
         </ul>
 
         <h3>PTAC (Véhicule isolé)</h3>
@@ -419,6 +428,8 @@
 
 
     <script>
+        // --- LOGIQUE JAVASCRIPT INTÉGRÉE ---
+
         // Fonction pour gérer la navigation via le menu déroulant et l'affichage des sections
         function naviguerVers() {
             const selectElement = document.getElementById('navigation-select');
@@ -460,8 +471,8 @@
                 resultatElement.innerHTML = "Erreur: Le PTAC est inférieur au PV. Vérifiez vos données. <strong>0.00 kg</strong>";
             }
         }
-        
-        // Fonction pour calculer le PMA final (Articulé)
+
+        // Fonction pour calculer le PMA final (Ensemble Articulé)
         function calculerPMAFinal() {
             const nbEssieux = document.getElementById('essieux-total').value;
             const ptraTracteur = parseFloat(document.getElementById('ptra-tracteur').value);
@@ -480,6 +491,8 @@
             if (nbEssieux === "4") {
                 pmaReglementaire = 38000; 
             } else if (nbEssieux === "5") {
+                pmaReglementaire = 40000; 
+            } else if (nbEssieux === "6") {
                 pmaReglementaire = 44000; 
             } else {
                 pmaReglementaire = 999999; 
@@ -516,6 +529,8 @@
             if (nbEssieuxTrain === "4") {
                 pmaReglementaireTrain = 38000; 
             } else if (nbEssieuxTrain === "5") {
+                pmaReglementaireTrain = 40000; 
+            } else if (nbEssieuxTrain === "6") {
                 pmaReglementaireTrain = 44000; 
             } else {
                 pmaReglementaireTrain = 999999; 
@@ -532,7 +547,7 @@
             
             resultatLegal.innerHTML = pmaFinalTrain.toLocaleString('fr-FR') + " kg";
         }
-        
+
         // Fonction pour calculer la CU de l'ensemble
         function calculerCUEnsemble() {
             const pmaFinal = parseFloat(document.getElementById('pma-final-calcul').value);
@@ -554,7 +569,7 @@
                 resultatCUEnsemble.innerHTML = "Erreur: Le poids à vide total est supérieur au PMA Final. Vérifiez vos données. <strong>0.00 kg</strong>";
             }
         }
-        
+
         // Affiche/Masque le choix de sens pour les Palettes Standard
         function toggleSensChargement() {
             const typePalette = document.getElementById('type-palette').value;
@@ -593,7 +608,7 @@
             let explication;
 
             if (typePalette === 'europe') {
-                // ML fixe pour l'Europe, comme demandé
+                // ML fixe pour l'Europe
                 mlParPalette = 0.40;
                 capaciteMax = 33;
                 explication = "Chaque palette Europe compte pour **0,40 ML**.";
@@ -603,9 +618,8 @@
                     capaciteMax = 27;
                     explication = "Chaque palette Standard (sens long) compte pour **0,60 ML**.";
                 } else if (sensChargement === 'court') {
-                    // Application de la convention de 0,50 ML demandée
+                    // Application de la convention de 0,50 ML
                     mlParPalette = 0.50;
-                    // Capacité basée sur 13.6 / 0.50 = 27.2
                     capaciteMax = 27; 
                     explication = "Chaque palette Standard (sens court - convention commerciale) compte pour **0,50 ML**.";
                 } else {
@@ -633,8 +647,5 @@
             }
         }
     </script>
-
 </body>
 </html>
-
-
