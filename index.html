@@ -264,8 +264,7 @@
             <select id="essieux-total" required>
                 <option value="">Sélectionner</option>
                 <option value="4">4 essieux (Ex: 2+2)</option>
-                <option value="5">5 essieux (Ex: 3+2 ou 2+3)</option>
-                <option value="6">6 essieux et plus (Ex: 3+3)</option>
+                <option value="5">5 essieux et plus (Ex: 3+2 ou 2+3)</option>
             </select>
         </div>
 
@@ -302,8 +301,7 @@
             <select id="essieux-train" required>
                 <option value="">Sélectionner</option>
                 <option value="4">4 essieux</option>
-                <option value="5">5 essieux</option>
-                <option value="6">6 essieux et plus</option>
+                <option value="5">5 essieux et plus</option>
             </select>
         </div>
 
@@ -401,8 +399,7 @@
         <h3>PMA Réglementaire (Ensembles)</h3>
         <ul>
             <li>**4 essieux :** 38 tonnes (38 000 kg)</li>
-            <li>**5 essieux :** 40 tonnes (40 000 kg)</li>
-            <li>**6 essieux et plus :** 44 tonnes (44 000 kg)</li>
+            <li>**5 essieux :** 44 tonnes (44 000 kg)</li>
         </ul>
 
         <h3>PTAC (Véhicule isolé)</h3>
@@ -487,9 +484,7 @@
             if (nbEssieux === "4") {
                 pmaReglementaire = 38000; 
             } else if (nbEssieux === "5") {
-                pmaReglementaire = 40000; 
-            } else if (nbEssieux === "6") {
-                pmaReglementaire = 44000; 
+                pmaReglementaire = 44000;
             } else {
                 pmaReglementaire = 999999; 
             }
@@ -525,9 +520,7 @@
             if (nbEssieuxTrain === "4") {
                 pmaReglementaireTrain = 38000; 
             } else if (nbEssieuxTrain === "5") {
-                pmaReglementaireTrain = 40000; 
-            } else if (nbEssieuxTrain === "6") {
-                pmaReglementaireTrain = 44000; 
+                pmaReglementaireTrain = 44000;
             } else {
                 pmaReglementaireTrain = 999999; 
             }
@@ -645,3 +638,4 @@
     </script>
 </body>
 </html>
+
