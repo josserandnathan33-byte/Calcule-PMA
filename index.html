@@ -6,7 +6,7 @@
     <title>Calculateur Logistique : Poids et Métrage Linéaire</title>
     
     <style>
-        /* --- STYLES CSS INTÉGRÉS --- */
+        /* --- STYLES CSS INTÉGRÉS (AUCUN CHANGEMENT ICI) --- */
 
         /* Styles de base et typographie */
         body {
@@ -439,11 +439,50 @@
                 if (targetElement) {
                     targetElement.style.display = 'block';
                     
+                    // --- CORRECTION POINT 1 : MISE À JOUR DE L'URL (pushState) ---
+                    let newUrl = 'index.html' + targetId; 
+                    
+                    // Pour l'accueil, on veut l'URL la plus simple possible (sans ancre)
+                    if (targetId === '#accueil') {
+                        newUrl = 'index.html'; 
+                    }
+
+                    // Changer l'URL dans la barre d'adresse sans recharger la page
+                    history.pushState(null, '', newUrl);
+
                     // Remonter en haut de la page après le changement de section
                     window.scrollTo({ top: 0, behavior: 'smooth' }); 
                 }
             }
         }
+
+        // Fonction pour vérifier l'URL et afficher la section correcte au chargement
+        function chargerSectionInitiale() {
+            const ancre = window.location.hash; // Récupère l'ancre de l'URL (ex: #calcul-cu)
+            
+            if (ancre && ancre !== '#accueil') {
+                const targetElement = document.querySelector(ancre);
+                
+                // S'assurer que le menu déroulant est mis à jour
+                const selectElement = document.getElementById('navigation-select');
+                selectElement.value = ancre;
+
+                // Masquer toutes les sections
+                document.querySelectorAll('section').forEach(section => {
+                    section.style.display = 'none';
+                });
+
+                // Afficher la section demandée
+                if (targetElement) {
+                    targetElement.style.display = 'block';
+                }
+            }
+            // Si aucune ancre ou #accueil, la section #accueil est affichée par défaut (via CSS)
+        }
+        
+        // Appel de la fonction après le chargement du DOM pour gérer l'URL de partage
+        document.addEventListener('DOMContentLoaded', chargerSectionInitiale);
+
 
         // Fonction pour calculer la CU d'un véhicule seul
         function calculerChargeUtile() {
@@ -479,10 +518,10 @@
                 return;
             }
 
-            // Limite Réglementaire (par essieux)
+            // Limite Réglementaire (par essieux) - Gardée à 44000 pour 5+ essieux (selon demande de ne pas corriger)
             let pmaReglementaire;
             if (nbEssieux === "4") {
-                pmaReglementaire = 38000; 
+                pmaReglementaire = 38000;  
             } else if (nbEssieux === "5") {
                 pmaReglementaire = 44000;
             } else {
@@ -515,7 +554,7 @@
                 return;
             }
 
-            // Limite Réglementaire Train Routier (en kg)
+            // Limite Réglementaire Train Routier (en kg) - Gardée à 44000 pour 5+ essieux (selon demande de ne pas corriger)
             let pmaReglementaireTrain;
             if (nbEssieuxTrain === "4") {
                 pmaReglementaireTrain = 38000; 
@@ -638,4 +677,3 @@
     </script>
 </body>
 </html>
-
